@@ -4,6 +4,7 @@
 // %c - Caractere (char)
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 struct Pessoa {
@@ -62,11 +63,21 @@ void salvarPessoa(FILE *arquivo, struct Pessoa p) {
 }
 
 int main() {
-    struct Pessoa pessoas[5];
+    int n;
+    printf("Quantas pessoas deseja cadastrar? ");
+    scanf("%d", &n);
+
+    // Para alocar de forma dinâmica a memória
+    struct Pessoa *pessoas = malloc(n * sizeof(struct Pessoa));
+    if(pessoas == NULL) {
+        print("Erro ao alozer memória.\n");
+        return 1;
+    }
+    
     int totalIdade = 0;    
 
     // Para a entrada de Dados.
-    for (int i = 0; i < 5; i++) { 
+    for (int i = 0; i < n; i++) { 
         printf("Digite seu nome %d: ", i+1);
         scanf("%s", pessoas[i].nome); // scanf é usado para ler e amarzenar valores.
 
@@ -84,7 +95,7 @@ int main() {
 
     // Aqui a saida já sai formatada
     printf("\n--- DADOS CADASTRADOS ---\n");
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < n; i++) {
     imprimirPessoa(pessoas[i]);  // Chama a função e imprime tudo
     totalIdade += (pessoas[i].idade >= 18);  // Mantém a contagem
     printf("\n");
@@ -96,16 +107,17 @@ int main() {
 
     if (arquivo == NULL) {
         printf("Erro ao criar o arquivo.\n");
+        free(pessoas);
         return 1; // encerra o programa
     }
 
     fprintf(arquivo, "--- DADOS CADASTRADOS ---\n");
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < n; i++) {
     salvarPessoa(arquivo, pessoas[i]);
 }
 
     fprintf(arquivo, "Total de Maiores de idade: %d\n", totalIdade);
-
+    fclose(arquivo);
 
     // Parte reposanvel por fazer a busca de um nome no arquivo.
     char nomeBusca[50];
@@ -114,7 +126,7 @@ int main() {
     printf("\nDigite o nome que deseja buscar: ");
     scanf("%s", nomeBusca);
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < n; i++) {
         if (strcmp(pessoas[i].nome, nomeBusca) == 0) {
             printf("\n--- Pessoa Encontrada ---\n");
             imprimirPessoa(pessoas[i]);
