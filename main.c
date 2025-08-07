@@ -4,6 +4,7 @@
 // %c - Caractere (char)
 
 #include <stdio.h>
+#include <string.h>
 
 struct Pessoa {
     char nome[50];
@@ -104,6 +105,27 @@ int main() {
 }
 
     fprintf(arquivo, "Total de Maiores de idade: %d\n", totalIdade);
+
+
+    // Parte reposanvel por fazer a busca de um nome no arquivo.
+    char nomeBusca[50];
+    int encontrado = 0;
+
+    printf("\nDigite o nome que deseja buscar: ");
+    scanf("%s", nomeBusca);
+
+    for (int i = 0; i < 5; i++) {
+        if (strcmp(pessoas[i].nome, nomeBusca) == 0) {
+            printf("\n--- Pessoa Encontrada ---\n");
+            imprimirPessoa(pessoas[i]);
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        printf("\nPessoa com nome '%s' não encontrada.\n", nomeBusca);
+    }
 
     fclose(arquivo);
 
